@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SpellingBee Spelling Practice</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { max-width: 600px; margin: auto; }
+        .buttons { margin: 20px 0; }
+        button { padding: 10px 20px; margin-right: 10px; }
+        input[type="text"] { padding: 8px; width: 200px; }
+        .message { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>SpellingBee Spelling Practice</h2>
+        <p>Listen to the word and type the correct spelling.</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p class="message {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <div class="buttons">
+            <button onclick="speakWord()">Hear Word</button>
+            <button onclick="speakDefinition()">Hear Definition</button>
+            <button onclick="speakSentence()">Hear Sentence</button>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="user_input" placeholder="Type the word" autocomplete="off">
+            <button type="submit">Submit</button>
+        </form>
+
+        <p><a href="{% url 'home' %}">Back to Home</a></p>
+    </div>
+
+    <script>
+        // Web Speech API for TTS
+        const synth = window.speechSynthesis;
+
+        function speak(text) {
+            if (synth.speaking) {
+                synth.cancel(); // Stop any ongoing speech
+            }
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            synth.speak(utterance);
+        }
+
+        function speakWord() {
+            speak("{{ word.word | escapejs }}");
+        }
+
+        function speakDefinition() {
+            speak("{{ word.definition | escapejs }}");
+        }
+
+        function speakSentence() {
+            const sentence = "{{ word.sentence | escapejs }}";
+            if (sentence) {
+                speak(sentence);
+            } else {
+                speak("No example sentence available.");
+            }
+        }
+
+        // Automatically speak the word when the page loads
+        window.onload = function() {
+            speakWord();
+        };
+    </script>
+</body>
+</html>
