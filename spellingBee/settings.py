@@ -120,6 +120,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',  # Points to the static directory in the project root
 ]
 LOGIN_REDIRECT_URL = 'home'  # Redirect to homepage after login
+
 LOGOUT_REDIRECT_URL = 'home'  # Redirect to homepage after logout
 
 # Default primary key field type

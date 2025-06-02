@@ -20,6 +20,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('users/', include('users.urls')),  # Include users app URLs
+    path('users/', include('users.urls')),  
     path('', lambda request: render(request, 'home.html'), name='home'),  # Temporary homepage
 ]

@@ -1,41 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SpellingBee Spelling Practice</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        .container { max-width: 600px; margin: auto; }
-        .buttons { margin: 20px 0; }
-        button { padding: 10px 20px; margin-right: 10px; }
-        input[type="text"] { padding: 8px; width: 200px; }
-        .message { margin-top: 20px; }
-    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/practice.css' %}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-book-open"></i>
+            <h1>SpellingBee</h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
     <div class="container">
         <h2>SpellingBee Spelling Practice</h2>
-        <p>Listen to the word and type the correct spelling.</p>
+        <p class="instruction-text">Listen to the word and type the correct spelling.</p>
 
         {% if messages %}
-            {% for message in messages %}
-                <p class="message {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</p>
-            {% endfor %}
+            <div class="messages">
+                {% for message in messages %}
+                    <p class="message {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</p>
+                {% endfor %}
+            </div>
         {% endif %}
 
         <div class="buttons">
-            <button onclick="speakWord()">Hear Word</button>
-            <button onclick="speakDefinition()">Hear Definition</button>
-            <button onclick="speakSentence()">Hear Sentence</button>
+            <button onclick="speakWord()" class="practice-button">
+                <i class="fas fa-volume-up"></i> Hear Word
+            </button>
+            <button onclick="speakDefinition()" class="practice-button">
+                <i class="fas fa-info-circle"></i> Hear Definition
+            </button>
+            <button onclick="speakSentence()" class="practice-button">
+                <i class="fas fa-quote-left"></i> Hear Sentence
+            </button>
         </div>
 
-        <form method="post">
+        <form method="post" class="input-form">
             {% csrf_token %}
             <input type="text" name="user_input" placeholder="Type the word" autocomplete="off">
-            <button type="submit">Submit</button>
+            <button type="submit" class="submit-button">
+                <i class="fas fa-check"></i> Submit
+            </button>
         </form>
 
-        <p><a href="{% url 'home' %}">Back to Home</a></p>
+        <p class="back-link">
+            <a href="{% url 'home' %}">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </p>
     </div>
+
+   
 
     <script>
         // Web Speech API for TTS
