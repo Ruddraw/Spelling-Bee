@@ -1,0 +1,43 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - SpellingBee</title>
+    <link rel="stylesheet" href="{% static 'css/Profile.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-book-open"></i>
+            <h1>SpellingBee</h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="auth-container">
+        <section class="auth-section">
+            <h2>Your Profile</h2>
+            <p class="welcome-text">Username: {{ user.username }}</p>
+            <p class="welcome-text">Email: {{ user.email|default:"Not provided" }}</p>
+
+            <h3>Practice History</h3>
+            <p class="welcome-text">Coming soon! Your practice sessions will appear here.</p>
+
+            <div class="button-container">
+                <a href="{% url 'home' %}" class="button">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+                <a href="{% url 'logout' %}" class="button button-secondary">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>

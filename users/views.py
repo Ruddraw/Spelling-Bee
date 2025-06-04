@@ -67,3 +67,8 @@ def spelling_practice(request):
 
         request.session['current_word_id'] = word.id  # Save for later checking
         return render(request, 'users/spelling_practice.html', {'word': word})
+
+@login_required
+def profile(request):
+    user = request.user
+    return render(request, 'users/profile.html', {'user': user})

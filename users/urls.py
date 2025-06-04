@@ -8,4 +8,5 @@ urlpatterns = [
     path('logout/', views.custom_logout, name='logout'),  # Updated to use custom_logout
     path('practice/', views.practice, name='practice'),
     path('spelling-practice/', views.spelling_practice, name='spelling_practice'),
+    path('profile/', views.profile, name='profile'),
 ]
