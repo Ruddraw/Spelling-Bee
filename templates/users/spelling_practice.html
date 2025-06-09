@@ -6,11 +6,9 @@
     <title>SpellingBee Spelling Practice</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/practice.css' %}">
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- Header Section -->
     <header class="header">
         <div class="logo">
             <i class="fas fa-book-open"></i>
@@ -18,7 +16,6 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <div class="container">
         <h2>SpellingBee Spelling Practice</h2>
         <p class="instruction-text">Listen to the word and type the correct spelling.</p>
@@ -31,6 +28,7 @@
             </div>
         {% endif %}
 
+        <div class="timer" id="timer">00:00</div>
         <div class="buttons">
             <button onclick="speakWord()" class="practice-button">
                 <i class="fas fa-volume-up"></i> Hear Word
@@ -40,6 +38,12 @@
             </button>
             <button onclick="speakSentence()" class="practice-button">
                 <i class="fas fa-quote-left"></i> Hear Sentence
+            </button>
+            <button id="startSession" class="practice-button" onclick="startSession()">
+                <i class="fas fa-play"></i> Start Your Practice Session
+            </button>
+            <button id="endSession" class="practice-button" onclick="endSession()" style="display: none;">
+                <i class="fas fa-stop"></i> End Your Session
             </button>
         </div>
 
@@ -58,15 +62,18 @@
         </p>
     </div>
 
-   
+    <footer class="footer">
+        <p>© 2025 SpellingBee. All rights reserved.</p>
+    </footer>
 
     <script>
-        // Web Speech API for TTS
         const synth = window.speechSynthesis;
+        let timerInterval;
+        let timeSeconds = 0;
 
         function speak(text) {
             if (synth.speaking) {
-                synth.cancel(); // Stop any ongoing speech
+                synth.cancel();
             }
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
@@ -90,9 +97,30 @@
             }
         }
 
-        // Automatically speak the word when the page loads
+        function updateTimer() {
+            const minutes = Math.floor(timeSeconds / 60);
+            const seconds = timeSeconds % 60;
+            document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            timeSeconds++;
+        }
+
+        function startSession() {
+            document.getElementById('startSession').style.display = 'none';
+            document.getElementById('endSession').style.display = 'inline-block';
+            timeSeconds = 0;
+            timerInterval = setInterval(updateTimer, 1000);
+            speakWord(); // Auto-pronounce the word
+        }
+
+        function endSession() {
+            clearInterval(timerInterval);
+            document.getElementById('startSession').style.display = 'inline-block';
+            document.getElementById('endSession').style.display = 'none';
+            // Note: Session saving will be handled in the view
+        }
+
         window.onload = function() {
-            speakWord();
+            // Do not auto-speak until session starts
         };
     </script>
 </body>
