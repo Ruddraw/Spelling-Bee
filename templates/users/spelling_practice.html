@@ -62,15 +62,113 @@
         </p>
     </div>
 
-    <footer class="footer">
-        <p>© 2025 SpellingBee. All rights reserved.</p>
-    </footer>
 
     <script>
+        // Initialize variables
         const synth = window.speechSynthesis;
         let timerInterval;
         let timeSeconds = 0;
+        
+        // Get session state from Django template with proper JSON serialization
+        const sessionActive = JSON.parse('{{ session_active|yesno:"true,false" }}');
+        const initialElapsedTime = JSON.parse('{{ elapsed_time|default:"0" }}');
+        const wordData = JSON.parse('{{ word_json|escapejs }}');
 
+        // Timer functions
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeSeconds / 60);
+            const seconds = timeSeconds % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            timeSeconds = Math.floor(initialElapsedTime);
+            updateTimerDisplay();
+            timerInterval = setInterval(function() {
+                timeSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        // Add this function
+        function restartSession() {
+            // Reset timer display immediately
+            timeSeconds = 0;
+            updateTimerDisplay();
+            
+            // Make request to restart session
+            fetch("{% url 'spelling_practice' %}?restart_session=true", {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    // Start fresh session
+                    document.getElementById('startSession').click();
+                }
+            });
+        }
+
+        // Modify your startSession function
+        async function startSession() {
+            try {
+                // Reset timer first
+                timeSeconds = 0;
+                updateTimerDisplay();
+                
+                // Then proceed with normal session start
+                document.getElementById('startSession').style.display = 'none';
+                document.getElementById('endSession').style.display = 'inline-block';
+                timerInterval = setInterval(updateTimer, 1000);
+                speakWord();
+            } catch (error) {
+                console.error('Error starting session:', error);
+            }
+        }
+
+        async function endSession() {
+            try {
+                const response = await fetch("{% url 'end_session' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                if (data.status === 'success') {
+                    // Stop the timer
+                    clearInterval(timerInterval);
+                    
+                    // Update UI
+                    document.getElementById('startSession').style.display = 'inline-block';
+                    document.getElementById('endSession').style.display = 'none';
+                    
+                    // Show success message
+                    alert(data.message);
+                    
+                    // Optional: Update timer display with final duration
+                    const minutes = Math.floor(data.duration / 60);
+                    const seconds = data.duration % 60;
+                    document.getElementById('timer').textContent = 
+                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error ending session:', error);
+                alert('Failed to end session. Please try again.');
+            }
+        }
+
+        // Speech functions
         function speak(text) {
             if (synth.speaking) {
                 synth.cancel();
@@ -81,47 +179,56 @@
         }
 
         function speakWord() {
-            speak("{{ word.word | escapejs }}");
+            speak(wordData.word);
         }
 
         function speakDefinition() {
-            speak("{{ word.definition | escapejs }}");
+            speak(wordData.definition);
         }
 
         function speakSentence() {
-            const sentence = "{{ word.sentence | escapejs }}";
-            if (sentence) {
-                speak(sentence);
+            if (wordData.sentence) {
+                speak(wordData.sentence);
             } else {
                 speak("No example sentence available.");
             }
         }
 
-        function updateTimer() {
-            const minutes = Math.floor(timeSeconds / 60);
-            const seconds = timeSeconds % 60;
-            document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            timeSeconds++;
-        }
+        // Page initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize UI based on session state
+            if (sessionActive) {
+                document.getElementById('startSession').style.display = 'none';
+                document.getElementById('endSession').style.display = 'inline-block';
+                startTimer();
+            }
 
-        function startSession() {
-            document.getElementById('startSession').style.display = 'none';
-            document.getElementById('endSession').style.display = 'inline-block';
-            timeSeconds = 0;
-            timerInterval = setInterval(updateTimer, 1000);
-            speakWord(); // Auto-pronounce the word
-        }
+            // Set up button event listeners
+            document.getElementById('startSession').addEventListener('click', startSession);
+            document.getElementById('endSession').addEventListener('click', endSession);
+            
+            // Set up speech buttons
+            document.querySelector('.fa-volume-up').closest('button').addEventListener('click', speakWord);
+            document.querySelector('.fa-info-circle').closest('button').addEventListener('click', speakDefinition);
+            document.querySelector('.fa-quote-left').closest('button').addEventListener('click', speakSentence);
 
-        function endSession() {
-            clearInterval(timerInterval);
-            document.getElementById('startSession').style.display = 'inline-block';
-            document.getElementById('endSession').style.display = 'none';
-            // Note: Session saving will be handled in the view
-        }
+            // Handle page visibility changes
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    stopTimer();
+                } else if (sessionActive) {
+                    startTimer();
+                }
+            });
+        });
 
-        window.onload = function() {
-            // Do not auto-speak until session starts
-        };
+        // Warn before leaving with active session
+        window.addEventListener('beforeunload', function(e) {
+            if (sessionActive) {
+                e.preventDefault();
+                e.returnValue = 'You have an active practice session. Are you sure you want to leave?';
+            }
+        });
     </script>
 </body>
 </html>
