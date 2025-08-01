@@ -9,5 +9,6 @@ urlpatterns = [
     path('practice/', views.practice, name='practice'),
     path('spelling-practice/', views.spelling_practice, name='spelling_practice'),
     path('profile/', views.profile, name='profile'),
+    path('start-session/', views.start_session, name='start_session'),
     path('end-session/', views.end_session, name='end_session'),
 ]

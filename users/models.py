@@ -1,4 +1,5 @@
 # users/models.py
+import json
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -13,6 +14,15 @@ class Word(models.Model):
 
     def __str__(self):
         return self.word
+
+    def to_json(self):
+        return json.dumps({
+            'word': self.word,
+            'pronunciation': self.pronunciation,
+            'part_of_speech': self.part_of_speech,
+            'definition': self.definition,
+            'sentence': self.sentence
+        })
 
     class Meta:
         ordering = ['index']

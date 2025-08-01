@@ -345,7 +345,7 @@
     },
     {
         "index": 44,
-        "word": "callous  [H: callus]",
+        "word": "callous",
         "pronunciation": "**kal**-uhs",
         "part_of_speech": "adj.",
         "definition": "Insensitive or unsympathetic",
@@ -361,7 +361,7 @@
     },
     {
         "index": 46,
-        "word": "cameo  [H: Cameo]",
+        "word": "cameo",
         "pronunciation": "**kam**-ee-oh",
         "part_of_speech": "n.",
         "definition": "A small character part in a play or movie, portrayed by a famous actor",
@@ -425,7 +425,7 @@
     },
     {
         "index": 54,
-        "word": "carpels  [H: carpals]",
+        "word": "carpels",
         "pronunciation": "**kahr**-puhlz",
         "part_of_speech": "n.",
         "definition": "The female reproductive part of a flower",
@@ -889,7 +889,7 @@
     },
     {
         "index": 112,
-        "word": "dolomite  [H: Dolomite]",
+        "word": "dolomite",
         "pronunciation": "**dol**-uh-m*eye*t **doh**-luh-m*eye*t",
         "part_of_speech": "n.",
         "definition": "A white mineral found in sedimentary rocks and veins",
@@ -961,7 +961,7 @@
     },
     {
         "index": 121,
-        "word": "eerie eery  [H: Erie, aerie,  eyrie]",
+        "word": "eerie eery",
         "pronunciation": "**eer**-ee",
         "part_of_speech": "adj.",
         "definition": "Weird and frightening; ghostly",
@@ -1265,11 +1265,11 @@
     },
     {
         "index": 159,
-        "word": "fetor foetor  [H: feeder]",
+        "word": "fetor foetor",
         "pronunciation": "**fee**-ter",
         "part_of_speech": "n.",
-        "definition": "A strong, foul smell*.*  *There is no* ***fetor*** *in a well-constructed compost heap.*",
-        "sentence": ""
+        "definition": "A strong, foul smell",
+        "sentence": "*There is no* ***fetor*** *in a well-constructed compost heap.*"
     },
     {
         "index": 160,
@@ -1401,7 +1401,7 @@
     },
     {
         "index": 176,
-        "word": "gardener  [H: Gardner]",
+        "word": "gardener",
         "pronunciation": "**gahrd-**ner",
         "part_of_speech": "n.",
         "definition": "A person who tends a garden",
@@ -1585,7 +1585,7 @@
     },
     {
         "index": 199,
-        "word": "impatience  [H: impatiens]",
+        "word": "impatience",
         "pronunciation": "im-**pay**-shuhns",
         "part_of_speech": "n.",
         "definition": "Restlessness",
@@ -1649,11 +1649,11 @@
     },
     {
         "index": 207,
-        "word": "inhabitants  [H: inhabitance]",
+        "word": "inhabitants",
         "pronunciation": "in-**hab**-ih-tunts",
         "part_of_speech": "n.",
-        "definition": "People or animals that occupy a place*.*  *Fogo Island has very few* ***inhabitants****.*",
-        "sentence": ""
+        "definition": "People or animals that occupy a place",
+        "sentence": "*Fogo Island has very few* ***inhabitants****.*"
     },
     {
         "index": 208,
@@ -1729,7 +1729,7 @@
     },
     {
         "index": 217,
-        "word": "laches  [H: latches]",
+        "word": "laches",
         "pronunciation": "**lach**-iz",
         "part_of_speech": "n.",
         "definition": "Unreasonable delay in making a claim",
@@ -1857,7 +1857,7 @@
     },
     {
         "index": 233,
-        "word": "mazer  [H: maser]",
+        "word": "mazer",
         "pronunciation": "**may**-zer",
         "part_of_speech": "n.",
         "definition": "Historically, a hardwood drinking bowl or healing cup",
@@ -2065,7 +2065,7 @@
     },
     {
         "index": 259,
-        "word": "ottoman  [H: Ottoman]",
+        "word": "ottoman",
         "pronunciation": "**ot**-uh-muhn",
         "part_of_speech": "n.",
         "definition": "An upholstered footstool",
@@ -2121,7 +2121,7 @@
     },
     {
         "index": 266,
-        "word": "parity  [H: parody]",
+        "word": "parity",
         "pronunciation": "**pa**-rih-tee",
         "part_of_speech": "n.",
         "definition": "The state of being equal",
@@ -2153,7 +2153,7 @@
     },
     {
         "index": 270,
-        "word": "pentagon  [H: Pentagon]",
+        "word": "pentagon",
         "pronunciation": "**pen**-tuh-gon **pen**-tuh-guhn",
         "part_of_speech": "n.",
         "definition": "A plane figure with five straight sides and five angles",
@@ -2297,7 +2297,7 @@
     },
     {
         "index": 288,
-        "word": "premiere  [H: premier]",
+        "word": "premiere",
         "pronunciation": "prih**-myair** prih-**meer**",
         "part_of_speech": "n.",
         "definition": "The first performance",
@@ -2665,7 +2665,7 @@
     },
     {
         "index": 334,
-        "word": "sept  [H: Sept.]",
+        "word": "sept",
         "pronunciation": "**sept**",
         "part_of_speech": "n.",
         "definition": "The subdivision of an Irish or Scottish clan",
@@ -2769,7 +2769,7 @@
     },
     {
         "index": 347,
-        "word": "sori  [H: sorry]",
+        "word": "sori",
         "pronunciation": "**sawr**-*eye* **sawr**-ee",
         "part_of_speech": "n.",
         "definition": "Clusters of spore-producing receptacles on the underside of ferns",
@@ -2905,7 +2905,7 @@
     },
     {
         "index": 364,
-        "word": "tercel tiercel",
+        "word": "tercel",
         "pronunciation": "**tur**-suhl",
         "part_of_speech": "n.",
         "definition": "A male hawk, especially a peregrine",
@@ -2945,7 +2945,7 @@
     },
     {
         "index": 369,
-        "word": "tiramisu tiramisù",
+        "word": "tiramisu",
         "pronunciation": "tih-ruh-**mee**-soo tih-ruh-mee-**soo**",
         "part_of_speech": "n.",
         "definition": "An Italian dessert consisting of layers of sponge cake soaked in coffee and brandy, with powdered chocolate and mascarpone cheese",
@@ -3081,7 +3081,7 @@
     },
     {
         "index": 386,
-        "word": "veranda verandah",
+        "word": "veranda",
         "pronunciation": "vuh-**ran**-duh",
         "part_of_speech": "n.",
         "definition": "An open porch, usually roofed, and partly enclosed by a railing",
@@ -3129,7 +3129,7 @@
     },
     {
         "index": 392,
-        "word": "Wales  [H: wails, whales]",
+        "word": "Wales",
         "pronunciation": "**waylz**",
         "part_of_speech": "n.",
         "definition": "One of the countries that makes up the United Kingdom",
@@ -3153,7 +3153,7 @@
     },
     {
         "index": 395,
-        "word": "whydah whidah",
+        "word": "whydah",
         "pronunciation": "**hwid**-uh **wid**-uh",
         "part_of_speech": "n.",
         "definition": "A small African bird",
@@ -3161,7 +3161,7 @@
     },
     {
         "index": 396,
-        "word": "wilderness  [H: Wilderness]",
+        "word": "wilderness",
         "pronunciation": "**wil**-der-nis",
         "part_of_speech": "n.",
         "definition": "An uncultivated and uninhabited area",
@@ -3169,7 +3169,7 @@
     },
     {
         "index": 397,
-        "word": "withe withy  [H: with]",
+        "word": "withe",
         "pronunciation": "**with w*eye*th wi*th***-ee",
         "part_of_speech": "n.",
         "definition": "A tough willow twig suitable for binding things together",
@@ -3185,7 +3185,7 @@
     },
     {
         "index": 399,
-        "word": "wrought  [H: rot, wrot]",
+        "word": "wrought",
         "pronunciation": "**rawt**",
         "part_of_speech": "v.",
         "definition": "To shape metal by hammering",

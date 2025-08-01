@@ -38,7 +38,7 @@ def practice(request):
 
 @login_required
 def spelling_practice(request):
-    # Clear any existing session when starting fresh
+    # Restart logic
     if 'restart_session' in request.GET:
         if 'practice_session_id' in request.session:
             try:
@@ -54,69 +54,83 @@ def spelling_practice(request):
                 pass
             del request.session['practice_session_id']
         return redirect('spelling_practice')
-    # Get or create practice session
-    if 'practice_session_id' not in request.session:
-        session = PracticeSession.objects.create(user=request.user)
-        request.session['practice_session_id'] = session.id
-    else:
+
+    # Create or get session
+    session = None
+    elapsed_time = 0
+    session_active = False
+    if 'practice_session_id' in request.session:
         try:
             session = PracticeSession.objects.get(
                 id=request.session['practice_session_id'],
                 user=request.user,
                 end_time__isnull=True
             )
+            elapsed_time = (timezone.now() - session.start_time).total_seconds()
+            session_active = True
         except PracticeSession.DoesNotExist:
-            session = PracticeSession.objects.create(user=request.user)
-            request.session['practice_session_id'] = session.id
+            del request.session['practice_session_id']  # Clean up invalid session
 
     if request.method == 'POST':
+        if not session_active:
+            messages.error(request, "Start a session before submitting.")
+            return redirect('spelling_practice')
         user_input = request.POST.get('user_input', '').strip().lower()
         correct_word_id = request.session.get('current_word_id')
-
-        if correct_word_id is None:
-            messages.error(request, "Session expired or invalid. Try again.")
-            return redirect('spelling_practice')
-
-        try:
-            word = Word.objects.get(id=correct_word_id)
-        except Word.DoesNotExist:
-            messages.error(request, "Word not found.")
-            return redirect('spelling_practice')
-
-        correct_word = word.word.lower()
-        is_correct = user_input == correct_word
-        
-        # Create word attempt
-        WordAttempt.objects.create(
-            session=session,
-            word=word,
-            user_input=user_input,
-            is_correct=is_correct
-        )
-
-        if is_correct:
-            messages.success(request, "Correct spelling!")
+        if correct_word_id:
+            try:
+                word = Word.objects.get(id=correct_word_id)
+                is_correct = user_input == word.word.lower()
+                WordAttempt.objects.create(
+                    session=session,
+                    word=word,
+                    user_input=user_input,
+                    is_correct=is_correct
+                )
+                if is_correct:
+                    messages.success(request, "Correct!")
+                else:
+                    messages.error(request, f"Incorrect. The correct spelling is {word.word}.")
+            except Word.DoesNotExist:
+                messages.error(request, "Word not found. Please try again.")
         else:
-            messages.error(request, f"Incorrect. The correct spelling is '{word.word}'.")
-
+            messages.error(request, "No word selected. Please refresh the page.")
+        # Clear the current word ID to force a new word on redirect
+        if 'current_word_id' in request.session:
+            del request.session['current_word_id']
         return redirect('spelling_practice')
 
-    else:  # GET request
+    # In GET: Only pick word if session active
+    if session_active:
         word = Word.objects.order_by('?').first()
         if not word:
             messages.error(request, "No words available.")
             return redirect('home')
-
         request.session['current_word_id'] = word.id
-        elapsed_time = (timezone.now() - session.start_time).total_seconds()
-        
-        return render(request, 'users/spelling_practice.html', {
-            'word': word,
-            'session_start_time': session.start_time.isoformat(),
-            'elapsed_time': elapsed_time
-        })
-    
-    
+    else:
+        word = None  # No word until session starts
+
+    # In context: Pass word only if active
+    return render(request, 'users/spelling_practice.html', {
+        'word': word,
+        'elapsed_time': elapsed_time,
+        'session_active': session_active,
+        'word_json': word.to_json() if word else '{}',
+    })
+
+@login_required
+def start_session(request):
+    if request.method == 'POST':
+        if 'practice_session_id' not in request.session:
+            session = PracticeSession.objects.create(user=request.user)
+            request.session['practice_session_id'] = session.id
+            return JsonResponse({
+                'status': 'success',
+                'start_time': session.start_time.isoformat(),
+                'message': 'Session started!'
+            })
+        return JsonResponse({'status': 'error', 'message': 'Session already active'}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
 @login_required
 def end_session(request):
