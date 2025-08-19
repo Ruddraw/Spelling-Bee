@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <!-- Header-->
     <header class="header">
         <div class="logo">
             <i class="fas fa-book-open"></i>
@@ -16,6 +17,7 @@
         </div>
     </header>
 
+    <!-- Main-->
     <div class="container">
         <h2>SpellingBee Spelling Practice</h2>
         <p class="instruction-text">Listen to the word and type the correct spelling.</p>
@@ -28,7 +30,6 @@
             </div>
         {% endif %}
 
-        <div class="timer" id="timer">00:00</div>
         <div class="buttons">
             <button onclick="speakWord()" class="practice-button">
                 <i class="fas fa-volume-up"></i> Hear Word
@@ -38,12 +39,6 @@
             </button>
             <button onclick="speakSentence()" class="practice-button">
                 <i class="fas fa-quote-left"></i> Hear Sentence
-            </button>
-            <button id="startSession" class="practice-button" onclick="startSession()">
-                <i class="fas fa-play"></i> Start Your Practice Session
-            </button>
-            <button id="endSession" class="practice-button" onclick="endSession()" style="display: none;">
-                <i class="fas fa-stop"></i> End Your Session
             </button>
         </div>
 
@@ -62,116 +57,15 @@
         </p>
     </div>
 
+   
 
     <script>
-        // Initialize variables
+        // Web Speech API for TTS
         const synth = window.speechSynthesis;
-        let timerInterval;
-        let timeSeconds = 0;
-        
-        // Get session state from Django template with proper JSON serialization
-        const sessionActive = JSON.parse('{{ session_active|yesno:"true,false" }}');
-        const initialElapsedTime = JSON.parse('{{ elapsed_time|default:"0" }}');
-        const wordData = JSON.parse('{{ word_json|escapejs }}');
 
-        // Timer functions
-        function updateTimerDisplay() {
-            const minutes = Math.floor(timeSeconds / 60);
-            const seconds = timeSeconds % 60;
-            document.getElementById('timer').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
-
-        function startTimer() {
-            timeSeconds = Math.floor(initialElapsedTime);
-            updateTimerDisplay();
-            timerInterval = setInterval(function() {
-                timeSeconds++;
-                updateTimerDisplay();
-            }, 1000);
-        }
-
-        function stopTimer() {
-            clearInterval(timerInterval);
-        }
-
-        // Add this function
-        function restartSession() {
-            // Reset timer display immediately
-            timeSeconds = 0;
-            updateTimerDisplay();
-            
-            // Make request to restart session
-            fetch("{% url 'spelling_practice' %}?restart_session=true", {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    // Start fresh session
-                    document.getElementById('startSession').click();
-                }
-            });
-        }
-
-        // Modify your startSession function
-        async function startSession() {
-            try {
-                // Reset timer first
-                timeSeconds = 0;
-                updateTimerDisplay();
-                
-                // Then proceed with normal session start
-                document.getElementById('startSession').style.display = 'none';
-                document.getElementById('endSession').style.display = 'inline-block';
-                timerInterval = setInterval(updateTimer, 1000);
-                speakWord();
-            } catch (error) {
-                console.error('Error starting session:', error);
-            }
-        }
-
-        async function endSession() {
-            try {
-                const response = await fetch("{% url 'end_session' %}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                const data = await response.json();
-                if (data.status === 'success') {
-                    // Stop the timer
-                    clearInterval(timerInterval);
-                    
-                    // Update UI
-                    document.getElementById('startSession').style.display = 'inline-block';
-                    document.getElementById('endSession').style.display = 'none';
-                    
-                    // Show success message
-                    alert(data.message);
-                    
-                    // Optional: Update timer display with final duration
-                    const minutes = Math.floor(data.duration / 60);
-                    const seconds = data.duration % 60;
-                    document.getElementById('timer').textContent = 
-                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error ending session:', error);
-                alert('Failed to end session. Please try again.');
-            }
-        }
-
-        // Speech functions
         function speak(text) {
             if (synth.speaking) {
-                synth.cancel();
+                synth.cancel(); // Stop any ongoing speech
             }
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
@@ -179,56 +73,25 @@
         }
 
         function speakWord() {
-            speak(wordData.word);
+            speak("{{ word.word | escapejs }}");
         }
 
         function speakDefinition() {
-            speak(wordData.definition);
+            speak("{{ word.definition | escapejs }}");
         }
 
         function speakSentence() {
-            if (wordData.sentence) {
-                speak(wordData.sentence);
+            const sentence = "{{ word.sentence | escapejs }}";
+            if (sentence) {
+                speak(sentence);
             } else {
                 speak("No example sentence available.");
             }
         }
 
-        // Page initialization
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize UI based on session state
-            if (sessionActive) {
-                document.getElementById('startSession').style.display = 'none';
-                document.getElementById('endSession').style.display = 'inline-block';
-                startTimer();
-            }
-
-            // Set up button event listeners
-            document.getElementById('startSession').addEventListener('click', startSession);
-            document.getElementById('endSession').addEventListener('click', endSession);
-            
-            // Set up speech buttons
-            document.querySelector('.fa-volume-up').closest('button').addEventListener('click', speakWord);
-            document.querySelector('.fa-info-circle').closest('button').addEventListener('click', speakDefinition);
-            document.querySelector('.fa-quote-left').closest('button').addEventListener('click', speakSentence);
-
-            // Handle page visibility changes
-            document.addEventListener('visibilitychange', function() {
-                if (document.hidden) {
-                    stopTimer();
-                } else if (sessionActive) {
-                    startTimer();
-                }
-            });
-        });
-
-        // Warn before leaving with active session
-        window.addEventListener('beforeunload', function(e) {
-            if (sessionActive) {
-                e.preventDefault();
-                e.returnValue = 'You have an active practice session. Are you sure you want to leave?';
-            }
-        });
+        window.onload = function() {
+            speakWord();
+        };
     </script>
 </body>
 </html>

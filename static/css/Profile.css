@@ -14,7 +14,7 @@ body {
 
 /* Header Styles */
 .header {
-    background-color: #ffca28; /* Bee yellow */
+    background-color: #ffca28; 
     padding: 20px 0;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -150,4 +150,106 @@ body {
         padding: 10px 20px;
         font-size: 1rem;
     }
+}
+
+
+/* Practice Statistics Styles */
+.stats-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    min-width: 100px;
+    margin: 5px;
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    color: #2c3e50;
+}
+
+.stat-label {
+    font-size: 14px;
+    margin: 5px 0 0;
+    color: #7f8c8d;
+}
+
+/* Practice Records Styles */
+.practice-records {
+    margin: 20px 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.record-item {
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.record-item.correct {
+    background-color: rgba(46, 204, 113, 0.1);
+    border-left: 4px solid #2ecc71;
+}
+
+.record-item.incorrect {
+    background-color: rgba(231, 76, 60, 0.1);
+    border-left: 4px solid #e74c3c;
+}
+
+.record-word {
+    font-weight: bold;
+    min-width: 100px;
+}
+
+.record-spelling {
+    flex: 1;
+    margin: 0 10px;
+}
+
+.record-date {
+    color: #7f8c8d;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.record-result {
+    font-weight: bold;
+}
+
+.record-result i {
+    margin-right: 5px;
+}
+
+.record-item.correct .record-result {
+    color: #2ecc71;
+}
+
+.record-item.incorrect .record-result {
+    color: #e74c3c;
+}
+
+/* Button adjustments */
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.button {
+    margin: 5px;
 }

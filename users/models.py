@@ -1,7 +1,6 @@
-# users/models.py
+from datetime import timezone
 from django.db import models
 from django.contrib.auth.models import User
-
 
 class Word(models.Model):
     index = models.IntegerField(unique=True)
@@ -18,23 +17,16 @@ class Word(models.Model):
         ordering = ['index']
 
 
-class PracticeSession(models.Model):
+
+class PracticeRecord(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    start_time = models.DateTimeField(auto_now_add=True)
-    end_time = models.DateTimeField(null=True, blank=True)
-    duration = models.DurationField(null=True, blank=True)
-
-    def __str__(self):
-        return f"Session for {self.user.username} at {self.start_time}"
-
-
-class WordAttempt(models.Model):
-    session = models.ForeignKey(
-        PracticeSession, on_delete=models.CASCADE, related_name='attempts')
     word = models.ForeignKey(Word, on_delete=models.CASCADE)
-    user_input = models.CharField(max_length=100)
-    is_correct = models.BooleanField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-
+    attempted_spelling = models.CharField(max_length=100)
+    is_correct = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)  
+    
+    class Meta:
+        ordering = ['-timestamp']
+    
     def __str__(self):
-        return f"Attempt: {self.word.word} - {'Correct' if self.is_correct else 'Incorrect'}"
+        return f"{self.user.username} - {self.word.word} - {'Correct' if self.is_correct else 'Incorrect'}"

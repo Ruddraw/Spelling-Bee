@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - SpellingBee</title>
+    <title>Practice History - SpellingBee</title>
     <link rel="stylesheet" href="{% static 'css/Profile.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -19,9 +19,8 @@
     <!-- Main Content -->
     <main class="auth-container">
         <section class="auth-section">
-            <h2>Your Profile</h2>
+            <h2>Practice History</h2>
             <p class="welcome-text">Username: {{ user.username }}</p>
-            <p class="welcome-text">Email: {{ user.email|default:"Not provided" }}</p>
             
             <h3>Practice Statistics</h3>
             <div class="stats-container">
@@ -39,7 +38,7 @@
                 </div>
             </div>
             
-            <h3>Recent Practice</h3>
+            <h3>All Practice Records</h3>
             {% if practice_records %}
                 <div class="practice-records">
                     {% for record in practice_records %}
@@ -62,8 +61,8 @@
             {% endif %}
             
             <div class="button-container">
-                <a href="{% url 'practice_history' %}" class="button">
-                    <i class="fas fa-history"></i> View Full History
+                <a href="{% url 'profile' %}" class="button">
+                    <i class="fas fa-user"></i> Back to Profile
                 </a>
                 <a href="{% url 'home' %}" class="button button-secondary">
                     <i class="fas fa-arrow-left"></i> Back to Home
